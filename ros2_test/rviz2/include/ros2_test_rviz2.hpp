@@ -20,7 +20,12 @@
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 
+#if defined(BUILD_CUDA)
 #include <gpu_bbs3d/bbs3d.cuh>
+#else
+#include <cpu_bbs3d/bbs3d.hpp>
+#endif
+
 
 class ROS2Test : public rclcpp::Node {
 public:
@@ -60,7 +65,11 @@ private:
   sensor_msgs::msg::PointCloud2::SharedPtr source_cloud_msg_;
   std::vector<sensor_msgs::msg::Imu> imu_buffer;
 
-  gpu::BBS3D gpu_bbs3d;
+#if defined(BUILD_CUDA)
+    gpu::BBS3D bbs3d_;
+#else
+    cpu::BBS3D bbs3d_;
+#endif
 
   // Config
   // path
